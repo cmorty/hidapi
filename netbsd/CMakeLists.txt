@@ -6,10 +6,6 @@ add_library(hidapi_netbsd
 )
 target_link_libraries(hidapi_netbsd PUBLIC hidapi_include)
 
-find_package(Threads REQUIRED)
-
-target_link_libraries(hidapi_netbsd PRIVATE Threads::Threads)
-
 set_target_properties(hidapi_netbsd
     PROPERTIES
         EXPORT_NAME "netbsd"
