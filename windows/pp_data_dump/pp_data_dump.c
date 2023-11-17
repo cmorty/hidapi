@@ -8,13 +8,6 @@
 
 #include <hidapi.h>
 
-#if defined(__MINGW32__)
-	// Mingw seems to interpret all bit fields as signed
-	#define ULC (ULONG)
-#else
-	#define ULC
-#endif
-
 void dump_hid_pp_cap(FILE* file, phid_pp_cap pp_cap, unsigned int cap_idx) {
 	fprintf(file, "pp_data->cap[%u]->UsagePage                    = 0x%04hX\n", cap_idx, pp_cap->UsagePage);
 	fprintf(file, "pp_data->cap[%u]->ReportID                     = 0x%02hhX\n", cap_idx, pp_cap->ReportID);
@@ -92,9 +85,11 @@ void dump_hidp_link_collection_node(FILE* file, phid_pp_link_collection_node pco
 	fprintf(file, "pp_data->LinkCollectionArray[%u]->NumberOfChildren   = %hu\n", coll_idx, pcoll->NumberOfChildren);
 	fprintf(file, "pp_data->LinkCollectionArray[%u]->NextSibling        = %hu\n", coll_idx, pcoll->NextSibling);
 	fprintf(file, "pp_data->LinkCollectionArray[%u]->FirstChild         = %hu\n", coll_idx, pcoll->FirstChild);
-	fprintf(file, "pp_data->LinkCollectionArray[%u]->CollectionType     = %lu\n", coll_idx, ULC(pcoll->CollectionType));
-	fprintf(file, "pp_data->LinkCollectionArray[%u]->IsAlias            = %lu\n", coll_idx, ULC(pcoll->IsAlias));
-	fprintf(file, "pp_data->LinkCollectionArray[%u]->Reserved           = 0x%08lX\n", coll_idx, ULC(pcoll->Reserved));
+	// The compilers are not consistent on ULONG-bit-fields: They loose the unsinged or define them as int.
+	// Thus just always cast them to unsinged int, which should be fine, as the biggest bit-field is 28 bit
+	fprintf(file, "pp_data->LinkCollectionArray[%u]->CollectionType     = %u\n", coll_idx, (unsigned int)(pcoll->CollectionType));
+	fprintf(file, "pp_data->LinkCollectionArray[%u]->IsAlias            = %u\n", coll_idx, (unsigned int)(pcoll->IsAlias));
+	fprintf(file, "pp_data->LinkCollectionArray[%u]->Reserved           = 0x%08X\n", coll_idx, (unsigned int)(pcoll->Reserved));
 }
 
 int dump_pp_data(FILE* file, hid_device* dev)

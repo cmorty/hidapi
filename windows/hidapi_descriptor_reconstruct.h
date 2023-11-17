@@ -125,6 +125,9 @@ typedef struct hid_pp_link_collection_node_ {
 	// Same as the public API structure HIDP_LINK_COLLECTION_NODE, but without PVOID UserContext at the end
 } hid_pp_link_collection_node, *phid_pp_link_collection_node;
 
+_Static_assert(sizeof(struct hid_pp_link_collection_node_) == 32,
+    "Size of struct hid_pp_link_collection_node_ not as expected. This might break binary compatibility");
+
 typedef struct hidp_unknown_token_ {
 	UCHAR Token; /* Specifies the one-byte prefix of a global item. */
 	UCHAR Reserved[3];
