@@ -37,6 +37,7 @@
 #include <windows.h>
 
 #include "hidapi_hidsdi.h"
+#include <assert.h>
 
 #define NUM_OF_HIDP_REPORT_TYPES 3
 
@@ -125,7 +126,7 @@ typedef struct hid_pp_link_collection_node_ {
 	// Same as the public API structure HIDP_LINK_COLLECTION_NODE, but without PVOID UserContext at the end
 } hid_pp_link_collection_node, *phid_pp_link_collection_node;
 
-_Static_assert(sizeof(struct hid_pp_link_collection_node_) == 32,
+static_assert(sizeof(struct hid_pp_link_collection_node_) == 16,
     "Size of struct hid_pp_link_collection_node_ not as expected. This might break binary compatibility");
 
 typedef struct hidp_unknown_token_ {
